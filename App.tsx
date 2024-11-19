@@ -9,7 +9,7 @@ import { config } from './config/gluestack-ui.config';
 // components
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { Loading } from '@components/Loading';
-import { SignIn } from '@screens/SignIn';
+import { Routes } from '@routes/index';
 
 
 export default function App() {
@@ -24,7 +24,7 @@ export default function App() {
       />
       {
         fontsLoaded ? (
-          <SignIn />
+          <Routes />
         ) : <Loading />
       }
     </GluestackUIProvider>
