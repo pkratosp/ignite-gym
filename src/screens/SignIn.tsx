@@ -3,14 +3,22 @@ import backgroundImg from '@assets/background.png'
 import Logo from '@assets/logo.svg'
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import { useNavigation } from "@react-navigation/native";
 
 export function SignIn() {
+    const navigator = useNavigation<AuthNavigatorRoutesProps>()
+
+    function handleNewAccout() {
+        navigator.navigate("singUp")
+    }
+
     return (
         <ScrollView 
             showsVerticalScrollIndicator={false} 
             contentContainerStyle={{ flexGrow: 1 }}
         >
-            <VStack flex={1} bg="$gray700">
+            <VStack flex={1}>
                 <Image
                     w={'$full'}
                     h={624}
@@ -47,7 +55,7 @@ export function SignIn() {
                     <Center flex={1} justifyContent="flex-end" mt="$4">
                         <Text color="$gray100" fontSize={'$sm'} mb={'$3'} fontFamily="$body">Ainda não tem acesso?</Text>
 
-                        <Button title="Criar conta" variant="outiline" />
+                        <Button title="Criar conta" variant="outiline" onPress={handleNewAccout} />
                     </Center>
                 </VStack>
         </VStack>
