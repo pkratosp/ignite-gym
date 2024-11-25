@@ -1,9 +1,47 @@
-import { Center, Text } from "@gluestack-ui/themed";
+import { HistoryCard } from "@components/HistoryCard";
+import { ScreenHeader } from "@components/ScreenHeader";
+import { Heading, Text, VStack } from "@gluestack-ui/themed";
+import { useState } from "react";
+import { SectionList } from "react-native";
 
 export function History() {
+    const [exercicies, setExercicies] = useState([
+        {
+            title: '22.07.24',
+            data: ['Puxada frontal', 'Remada unilateral'],
+        },
+        {
+            title: '23.07.24',
+            data: ['Puxada frontal'],
+        },
+    ])
+
     return (
-        <Center flex={1}>
-            <Text>History</Text>
-        </Center>
+        <VStack flex={1}>
+            <ScreenHeader title="Historico" />
+
+            <SectionList 
+                sections={exercicies}
+                keyExtractor={(item) => item}
+                renderItem={() => <HistoryCard />}
+                renderSectionHeader={({ section }) => (
+                    <Heading color="$gray200" fontSize="$md" mt="$10" mb="$3">
+                        {section.title}
+                    </Heading>
+                )}
+                ListEmptyComponent={() => (
+                    <Text color="$gray200" textAlign="center">
+                        Não há exercícios registrados ainda. {'\n'}
+                        Vamos fazer execícios hoje?
+                    </Text>
+                )}
+                showsVerticalScrollIndicator={false}
+                style={{ paddingHorizontal: 32 }}
+                contentContainerStyle={
+                    exercicies.length === 0 && { flex: 1, justifyContent: "center" }
+                }
+            />
+            
+        </VStack>
     )
 }
