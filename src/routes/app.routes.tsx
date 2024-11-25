@@ -72,7 +72,9 @@ export function AppRoutes() {
                 name="exercise"
                 component={Exercise}
                 options={{
-                    tabBarButton: () => null
+                    tabBarItemStyle: {
+                        display: 'none',
+                    }
                 }}
             />
 
