@@ -3,9 +3,10 @@ import { Input } from "@components/Input";
 import { ScreenHeader } from "@components/ScreenHeader";
 import { UserPhoto } from "@components/UserPhoto";
 import { Center, Heading, Text, VStack } from "@gluestack-ui/themed";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { Alert, ScrollView, TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from "react";
+import * as FileSystem from 'expo-file-system'
 
 export function Profile() {
     const [photoProfile, setPhotoProfile] = useState("https://github.com/pkratosp.png")
@@ -22,7 +23,18 @@ export function Profile() {
             return
         }
 
-        setPhotoProfile(photoSelected.assets[0].uri)
+        const photoUri = photoSelected.assets[0].uri
+
+        if(photoUri) {
+            const photoSize = (await FileSystem.getInfoAsync(photoUri)) as { size: number }
+
+            if(photoSize.size && photoSize.size / 1024 / 1024 > 5) {
+                return Alert.alert("Essa imagem é muito grande. Escolha uma de até 5MB")
+            }
+
+            setPhotoProfile(photoUri)
+        }
+
     }
 
     return (
