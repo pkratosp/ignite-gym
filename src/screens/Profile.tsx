@@ -5,11 +5,24 @@ import { UserPhoto } from "@components/UserPhoto";
 import { Center, Heading, Text, VStack } from "@gluestack-ui/themed";
 import { ScrollView, TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
+import { useState } from "react";
 
 export function Profile() {
+    const [photoProfile, setPhotoProfile] = useState("https://github.com/pkratosp.png")
 
-    function handleImagePicker () {
-        ImagePicker.launchImageLibraryAsync()
+    async function handleImagePicker () {
+        const photoSelected = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+            aspect: [4,4],
+            allowsEditing: true
+        })
+
+        if(photoSelected.canceled) {
+            return
+        }
+
+        setPhotoProfile(photoSelected.assets[0].uri)
     }
 
     return (
@@ -19,7 +32,7 @@ export function Profile() {
             <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
                 <Center mt="$6" px="$10">
                     <UserPhoto
-                        source={"https://github.com/pkratosp.png"}
+                        source={photoProfile}
                         alt="imagem perfil"
                         size="xl"
                     />
