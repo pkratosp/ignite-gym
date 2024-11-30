@@ -5,13 +5,26 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
+import { useForm, Controller } from 'react-hook-form'
 
+interface FormType {
+    name: string
+    email: string
+    password: string
+    confirm_password: string
+}
 
 export function SignUp() {
+    const { control, handleSubmit, formState: { errors } } = useForm<FormType>()
+
     const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
     function handleGoBack() {
         navigation.goBack()
+    }
+
+    async function handleSingUp(data: FormType) {
+        console.log(data)
     }
 
     return (
@@ -39,22 +52,87 @@ export function SignUp() {
                     <Center gap={'$2'} flex={1}>
                         <Heading color="$gray100">Crie sua conta</Heading>
 
-                        <Input 
-                            placeholder="Nome"
+                        <Controller 
+                            control={control}
+                            name="name"
+                            rules={{
+                                required: 'Nome obrigatório'
+                            }}
+                            render={({ field: { value, onChange, onBlur }, }) => (
+                                <Input
+                                    onChangeText={onChange}
+                                    onBlur={onBlur}
+                                    value={value}
+                                    placeholder="Nome"
+                                    errorMessage={errors.name?.message}
+                                />
+                            )}
                         />
 
-                        <Input 
-                            placeholder="E-mail"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
+                        <Controller 
+                            control={control}
+                            name="email"
+                            rules={{
+                                required: 'E-mail obrigatório',
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: 'E-mail invalido'
+                                }
+                            }}
+                            render={({ field: { value, onChange, onBlur }, }) => (
+                                <Input
+                                    onChangeText={onChange}
+                                    onBlur={onBlur}
+                                    value={value}
+                                    placeholder="E-mail"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    errorMessage={errors.email?.message}
+                                />
+                            )}
                         />
 
-                        <Input 
-                            placeholder="Senha"
-                            secureTextEntry={true}
+                        <Controller 
+                            control={control}
+                            name="password"
+                            rules={{
+                                required: 'Senha invalida'
+                            }}
+                            render={({ field: { value, onChange, onBlur } }) => (
+                                <Input
+                                    onChangeText={onChange}
+                                    onBlur={onBlur}
+                                    value={value}
+                                    placeholder="Senha"
+                                    secureTextEntry={true}
+                                    errorMessage={errors.password?.message}
+                                />
+                            )}
                         />
 
-                        <Button title="Criar e acessar" />
+                        <Controller 
+                            control={control}
+                            name="confirm_password"
+                            rules={{
+                                required: 'Senha invalida'
+                            }}
+                            render={({ field: { value, onChange, onBlur } }) => (
+                                <Input
+                                    onChangeText={onChange}
+                                    onBlur={onBlur}
+                                    value={value}
+                                    placeholder="Senha"
+                                    secureTextEntry={true}
+                                    errorMessage={errors.confirm_password?.message}
+                                />
+                            )}
+                        />
+
+
+                        <Button 
+                            title="Criar e acessar" 
+                            onPress={handleSubmit(handleSingUp)}
+                        />
                     </Center>
 
                     <Button 
