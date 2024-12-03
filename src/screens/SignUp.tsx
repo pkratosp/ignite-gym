@@ -6,6 +6,8 @@ import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 import { useForm, Controller } from 'react-hook-form'
+import * as yup from "yup"
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface FormType {
     name: string
@@ -14,8 +16,17 @@ interface FormType {
     confirm_password: string
 }
 
+const singUpSchema = yup.object({
+    name: yup.string().required('informe o nome'),
+    email: yup.string().required('inform o email').email('email invalida'),
+    password: yup.string().required('informe a senha').min(6, 'A senha deve conter no minimo 6 caracteres'),
+    confirm_password: yup.string().required('informe a confirmação de senha').min(6, 'A senha deve conter no minimo 6 caracteres').oneOf([yup.ref("password"), ""], "A confirmação da senha não confere"),
+})
+
 export function SignUp() {
-    const { control, handleSubmit, formState: { errors } } = useForm<FormType>()
+    const { control, handleSubmit, formState: { errors } } = useForm<FormType>({
+        resolver: yupResolver(singUpSchema)
+    })
 
     const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
@@ -55,9 +66,6 @@ export function SignUp() {
                         <Controller 
                             control={control}
                             name="name"
-                            rules={{
-                                required: 'Nome obrigatório'
-                            }}
                             render={({ field: { value, onChange, onBlur }, }) => (
                                 <Input
                                     onChangeText={onChange}
@@ -72,13 +80,6 @@ export function SignUp() {
                         <Controller 
                             control={control}
                             name="email"
-                            rules={{
-                                required: 'E-mail obrigatório',
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'E-mail invalido'
-                                }
-                            }}
                             render={({ field: { value, onChange, onBlur }, }) => (
                                 <Input
                                     onChangeText={onChange}
@@ -95,9 +96,6 @@ export function SignUp() {
                         <Controller 
                             control={control}
                             name="password"
-                            rules={{
-                                required: 'Senha invalida'
-                            }}
                             render={({ field: { value, onChange, onBlur } }) => (
                                 <Input
                                     onChangeText={onChange}
@@ -113,9 +111,6 @@ export function SignUp() {
                         <Controller 
                             control={control}
                             name="confirm_password"
-                            rules={{
-                                required: 'Senha invalida'
-                            }}
                             render={({ field: { value, onChange, onBlur } }) => (
                                 <Input
                                     onChangeText={onChange}
