@@ -10,6 +10,7 @@ import { config } from './config/gluestack-ui.config';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { Loading } from '@components/Loading';
 import { Routes } from '@routes/index';
+import { AuthContextProvider } from '@contexts/AuthContext';
 
 
 export default function App() {
@@ -22,11 +23,13 @@ export default function App() {
         backgroundColor={"transparent"}
         translucent
       />
-      {
-        fontsLoaded ? (
-          <Routes />
-        ) : <Loading />
-      }
+      <AuthContextProvider>
+        {
+          fontsLoaded ? (
+            <Routes />
+          ) : <Loading />
+        }
+      </AuthContextProvider>
     </GluestackUIProvider>
   )
 }
