@@ -6,6 +6,7 @@ import { storageSession, storageUser } from "@storage/storageUser";
 export interface AuthContextProps {
   user: UserDto;
   signIn: (email: string, password: string) => Promise<void>;
+  isLoadingUserStorage: boolean;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export function AuthContextProvider({ children }: Props) {
+  const [isLoadingUserStorage, setIsLoadingUserStorage] =
+    useState<boolean>(false);
   const [user, setUser] = useState<UserDto>({
     avatar: "",
     email: "",
@@ -36,10 +39,16 @@ export function AuthContextProvider({ children }: Props) {
   }
 
   async function userLogged() {
-    const session = await storageSession();
+    try {
+      const session = await storageSession();
 
-    if (session) {
-      setUser(session);
+      if (session) {
+        setUser(session);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorage(false);
     }
   }
 
@@ -52,6 +61,7 @@ export function AuthContextProvider({ children }: Props) {
       value={{
         user,
         signIn,
+        isLoadingUserStorage,
       }}
     >
       {children}
