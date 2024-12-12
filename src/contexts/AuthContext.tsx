@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { UserDto } from "../dto/UserDto";
 import { api } from "../lib/axios";
+import { storageSession, storageUser } from "@storage/storageUser";
 
 export interface AuthContextProps {
   user: UserDto;
@@ -27,11 +28,24 @@ export function AuthContextProvider({ children }: Props) {
 
       if (response.data.user) {
         setUser(response.data.user);
+        storageUser(response.data.user);
       }
     } catch (error) {
       throw error;
     }
   }
+
+  async function userLogged() {
+    const session = await storageSession();
+
+    if (session) {
+      setUser(session);
+    }
+  }
+
+  useEffect(() => {
+    userLogged();
+  }, []);
 
   return (
     <AuthContext.Provider
