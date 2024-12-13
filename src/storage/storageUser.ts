@@ -15,3 +15,7 @@ export async function storageSession() {
 
   return user;
 }
+
+export async function removeSession() {
+  await AsyncStorage.removeItem(USER_STORAGE);
+}

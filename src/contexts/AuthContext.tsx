@@ -1,12 +1,17 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { UserDto } from "../dto/UserDto";
 import { api } from "../lib/axios";
-import { storageSession, storageUser } from "@storage/storageUser";
+import {
+  removeSession,
+  storageSession,
+  storageUser,
+} from "@storage/storageUser";
 
 export interface AuthContextProps {
   user: UserDto;
   signIn: (email: string, password: string) => Promise<void>;
   isLoadingUserStorage: boolean;
+  signOut: () => Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -52,6 +57,20 @@ export function AuthContextProvider({ children }: Props) {
     }
   }
 
+  async function signOut() {
+    try {
+      setIsLoadingUserStorage(true);
+
+      await removeSession();
+
+      setUser({} as UserDto);
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorage(false);
+    }
+  }
+
   useEffect(() => {
     userLogged();
   }, []);
@@ -62,6 +81,7 @@ export function AuthContextProvider({ children }: Props) {
         user,
         signIn,
         isLoadingUserStorage,
+        signOut,
       }}
     >
       {children}
