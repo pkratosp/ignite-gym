@@ -110,7 +110,6 @@ export function SignIn() {
               name="email"
               render={({ field: { value, onChange, ref, onBlur } }) => (
                 <Input
-                  ref={ref}
                   onBlur={onBlur}
                   value={value}
                   onChangeText={onChange}
@@ -126,7 +125,6 @@ export function SignIn() {
               name="password"
               render={({ field: { value, onChange, ref, onBlur } }) => (
                 <Input
-                  ref={ref}
                   onBlur={onBlur}
                   value={value}
                   onChangeText={onChange}
