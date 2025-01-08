@@ -9,6 +9,7 @@ import {
 
 export interface AuthContextProps {
   user: UserDto;
+  updatedDataProfile: (user: UserDto) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   isLoadingUserStorage: boolean;
   signOut: () => Promise<void>;
@@ -28,6 +29,7 @@ export function AuthContextProvider({ children }: Props) {
     email: "",
     id: "",
     name: "",
+    token: "",
   });
 
   async function signIn(email: string, password: string) {
@@ -35,8 +37,14 @@ export function AuthContextProvider({ children }: Props) {
       const response = await api.post("/sessions", { email, password });
 
       if (response.data.user) {
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.token}`;
         setUser(response.data.user);
-        storageUser(response.data.user);
+        storageUser({
+          ...response.data.user,
+          token: response.data.token,
+        });
       }
     } catch (error) {
       throw error;
@@ -71,6 +79,11 @@ export function AuthContextProvider({ children }: Props) {
     }
   }
 
+  async function updatedDataProfile(user: UserDto) {
+    setUser(user);
+    await storageUser(user);
+  }
+
   useEffect(() => {
     userLogged();
   }, []);
@@ -79,6 +92,7 @@ export function AuthContextProvider({ children }: Props) {
     <AuthContext.Provider
       value={{
         user,
+        updatedDataProfile,
         signIn,
         isLoadingUserStorage,
         signOut,
