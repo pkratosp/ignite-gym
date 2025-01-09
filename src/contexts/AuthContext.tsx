@@ -30,6 +30,7 @@ export function AuthContextProvider({ children }: Props) {
     id: "",
     name: "",
     token: "",
+    refresh_token: "",
   });
 
   async function signIn(email: string, password: string) {
@@ -44,6 +45,7 @@ export function AuthContextProvider({ children }: Props) {
         storageUser({
           ...response.data.user,
           token: response.data.token,
+          refresh_token: response.data.refresh_token,
         });
       }
     } catch (error) {
@@ -86,6 +88,14 @@ export function AuthContextProvider({ children }: Props) {
 
   useEffect(() => {
     userLogged();
+  }, []);
+
+  useEffect(() => {
+    const subscribe = api.registerIntercepTokenMenager(signOut);
+
+    return () => {
+      subscribe();
+    };
   }, []);
 
   return (

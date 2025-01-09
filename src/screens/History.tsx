@@ -20,7 +20,7 @@ export function History() {
     setLoading(true);
     try {
       const session = await storageSession();
-      console.log(session);
+
       const response = await api.get("/history", {
         headers: {
           Authorization: `Bearer ${session.token}`,
@@ -34,8 +34,6 @@ export function History() {
         ? error.message
         : "Não foi possível carregar os detalhes do exercício";
 
-      console.log(title);
-      console.error(error);
       //   toast.show({
       //     placement: "top",
       //     render: ({ id }) => (
