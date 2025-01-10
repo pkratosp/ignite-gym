@@ -9,6 +9,7 @@ import { HistoryByDayDto } from "../dto/HistoryByDayDto";
 import { AppError } from "@utils/AppError";
 import { ToastMessage } from "@components/ToastMessage";
 import { storageSession } from "@storage/storageUser";
+import { Loading } from "@components/Loading";
 
 export function History() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -61,27 +62,31 @@ export function History() {
     <VStack flex={1}>
       <ScreenHeader title="Historico" />
 
-      <SectionList
-        sections={exercicies}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <HistoryCard item={item} />}
-        renderSectionHeader={({ section }) => (
-          <Heading color="$gray200" fontSize="$md" mt="$10" mb="$3">
-            {section.title}
-          </Heading>
-        )}
-        ListEmptyComponent={() => (
-          <Text color="$gray200" textAlign="center">
-            Não há exercícios registrados ainda. {"\n"}
-            Vamos fazer execícios hoje?
-          </Text>
-        )}
-        showsVerticalScrollIndicator={false}
-        style={{ paddingHorizontal: 32 }}
-        contentContainerStyle={
-          exercicies.length === 0 && { flex: 1, justifyContent: "center" }
-        }
-      />
+      {loading === true ? (
+        <Loading />
+      ) : (
+        <SectionList
+          sections={exercicies}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <HistoryCard item={item} />}
+          renderSectionHeader={({ section }) => (
+            <Heading color="$gray200" fontSize="$md" mt="$10" mb="$3">
+              {section.title}
+            </Heading>
+          )}
+          ListEmptyComponent={() => (
+            <Text color="$gray200" textAlign="center">
+              Não há exercícios registrados ainda. {"\n"}
+              Vamos fazer execícios hoje?
+            </Text>
+          )}
+          showsVerticalScrollIndicator={false}
+          style={{ paddingHorizontal: 32 }}
+          contentContainerStyle={
+            exercicies.length === 0 && { flex: 1, justifyContent: "center" }
+          }
+        />
+      )}
     </VStack>
   );
 }
